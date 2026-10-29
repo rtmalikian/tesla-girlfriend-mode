@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tesla Girlfriend Mode — Live Demo</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; max-width: 760px;
+         margin: 2em auto; padding: 0 1em; color: #222; line-height: 1.5; }
+  .badge { display: inline-block; background: #e11d63; color: #fff;
+           font-weight: 700; font-size: 0.8em; padding: 0.2em 0.6em;
+           border-radius: 4px; letter-spacing: 0.05em; }
+  label { font-weight: 600; display: block; margin-top: 1em; }
+  input[type=range] { width: 100%; }
+  select { font-size: 1em; padding: 0.4em; width: 100%; margin: 0.3em 0; }
+  button { font-size: 1em; padding: 0.6em 1.4em; cursor: pointer; margin-top: 1em; }
+  .val { color: #e11d63; font-weight: 700; }
+  .plan { border-left: 3px solid #e11d63; padding-left: 1em; margin: 1em 0; }
+  .plan div { margin: 0.4em 0; }
+  .proposed { color: #92400e; font-weight: 600; }
+  .note { color: #555; font-size: 0.9em; }
+  .learned { background: #fdf2f8; border-radius: 6px; padding: 0.8em 1em; }
+</style>
+</head>
+<body>
+<h1>Tesla Girlfriend Mode 💗</h1>
+<p><span class="badge">DEMO DATA</span> — This page runs the app's real
+decision logic in your browser on pretend data. No real car, Spotify
+account, or Tesla account is connected.</p>
+<p>The passenger side, set up <em>her</em> way — chosen automatically by
+the weather. Only the passenger side is ever touched.</p>
+
+<label>Outside temperature: <span class="val" id="tempVal">52°F</span></label>
+<input type="range" id="temp" min="20" max="105" value="52">
+<label>Car speed: <span class="val" id="speedVal">0 mph</span></label>
+<input type="range" id="speed" min="0" max="85" value="0">
+<label>Situation</label>
+<select id="situation">
+  <option value="returning">Parked at her place — walking back to the car</option>
+  <option value="parked">Parked</option>
+  <option value="driving">Driving</option>
+</select>
+<button onclick="activate()">Activate Girlfriend Mode</button>
+
+<h2>Her plan</h2>
+<div class="plan" id="plan"><div>(press the button)</div></div>
+<p class="note" id="music"></p>
+
+<h2>What it has learned</h2>
+<div class="learned">
+<p class="note" style="margin-top:0">From a few pretend weeks of trips together (all demo data):</p>
+<div>• You usually head to <strong>her place on Fridays around 6 PM</strong> — want Girlfriend Mode pre-activated, and the seat pre-warmed, before you leave today?</div>
+<div>• On the last 3 cool trips, her seat heater was changed from 2 to 3 after activation. Make 3 the saved default? <em>(Suggestion only — nothing changes unless you say so.)</em></div>
+<div>• The love-songs mix was skipped on the last 3 beach trips. Want to pick a different mix for her profile?</div>
+</div>
+
+<p class="note">Vent aim and fan speed are <span class="proposed">proposed Tesla API features</span> —
+they don't exist yet, so the real app simulates them and labels them honestly.
+The music step plays through the owner's own Spotify account on their phone —
+Tesla's API can't pick a playlist inside the car's Spotify app.</p>
+
+<script>
+const COOL = 65, WARM = 78, FREEWAY = 55;
+const COOL_TEMP = 73, MID_TEMP = 72, SEAT = 2, FAN = "Low";
+function upd() {
+  document.getElementById("tempVal").textContent = document.getElementById("temp").value + "°F";
+  document.getElementById("speedVal").textContent = document.getElementById("speed").value + " mph";
+}
+document.getElementById("temp").oninput = upd;
+document.getElementById("speed").oninput = upd;
+
+function activate() {
+  const t = +document.getElementById("temp").value;
+  const v = +document.getElementById("speed").value;
+  const sit = document.getElementById("situation").value;
+  const parked = sit !== "driving" && v === 0;
+  const highway = v > FREEWAY;
+  const steps = [];
+  let mode;
+  if (t < COOL) {
+    mode = "cool-day cozy mode";
+    steps.push("Turn the climate on for her");
+    steps.push("Set her passenger temperature to " + COOL_TEMP + "°F");
+    steps.push('Set her vent fan to ' + FAN + ' <span class="proposed">(proposed API — simulated)</span>');
+    steps.push("Turn her passenger seat heater on at level " + SEAT +
+      (sit === "returning" ? " — so the seat is already cozy when she gets back in" : ""));
+  } else if (t >= WARM) {
+    mode = "warm-day fresh-air mode";
+    steps.push("Turn the climate off — she prefers fresh air when it's warm");
+    if (!highway) steps.push("Crack the windows a little (" + (parked ? "parked" : "low speed") + ")");
+    else steps.push("Windows stay closed: freeway speed beats the warm-day window crack, every time");
+  } else {
+    mode = "in-between mode";
+    steps.push("Turn the climate on for her");
+    steps.push("Set her passenger temperature to " + MID_TEMP + "°F");
+    steps.push('Aim her passenger-side vent up toward her head <span class="proposed">(proposed API — simulated)</span>');
+    steps.push('Set her vent fan to ' + FAN + ' <span class="proposed">(proposed API — simulated)</span>');
+  }
+  steps.push("Music: her love-songs mix will start on Spotify 🎵");
+  if (highway) steps.push("Close the windows fully — you're above " + FREEWAY + " mph");
+  document.getElementById("plan").innerHTML =
+    "<div><strong>Girlfriend Mode: " + mode + " — " + t + "°F outside.</strong></div>" +
+    steps.map(s => "<div>• " + s + "</div>").join("");
+  document.getElementById("music").textContent =
+    "Now playing: her love-songs mix 🎵 (pretend playback — demo data)";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tesla-girlfriend-mode"
+version = "0.1.0"
+description = "Girlfriend Mode for Tesla — a partner-comfort profile for the passenger seat: seat heater pre-warm on cool days, windows cracked on warm days, her vent aimed up in between, chosen automatically by the weather, with OpenAI-compatible AI endpoints and on-device learning that suggests profile improvements"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Raphael Malikian", email = "rtmalikian@gmail.com" }]
+keywords = ["tesla", "fleet-api", "openai-compatible", "llm", "ai", "climate", "seat-heater", "passenger-comfort", "preconditioning", "ollama", "ev", "model-3", "model-y", "model-s", "model-x", "cybertruck"]
+dependencies = [
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Home Automation",
+]
+
+[project.scripts]
+tgmode = "tesla_girlfriend_mode.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/rtmalikian/tesla-girlfriend-mode"
+Issues = "https://github.com/rtmalikian/tesla-girlfriend-mode/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
